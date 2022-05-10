@@ -6,7 +6,9 @@ import (
 	"mediaislam/auth"
 	"mediaislam/handler"
 	"mediaislam/helper"
+	"mediaislam/materi"
 	"mediaislam/user"
+	"mediaislam/ustadz"
 	"net/http"
 	"strings"
 
@@ -25,11 +27,17 @@ func main() {
 	}
 
 	userRepository := user.NewRepository(db)
+	materiRepository := materi.NewRepository(db)
+	ustadzRepository := ustadz.NewRepository(db) 
+
 	userService := user.NewService(userRepository)
+	materiService := materi.NewService(materiRepository)
+	ustadzService := ustadz.NewService(ustadzRepository)
 	authService := auth.NewService()
 
 	userHandler := handler.NewUserHandler(userService, authService)
-
+	materiHandler := handler.NewMateriHandler(materiService)
+	ustadzHandler := handler.NewUstadzHandler(ustadzService)
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
@@ -38,6 +46,13 @@ func main() {
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
 
+	api.POST("/ustadz", ustadzHandler.RegisterUstadz)
+	api.GET("/ustadz", ustadzHandler.GetUstadzList)
+	api.GET("/ustadz/:id",  ustadzHandler.GetUstadz)
+
+
+	api.GET("/materiall", materiHandler.GetMateriList)
+	api.GET("/materiall/:id", materiHandler.GetMateri)
 	router.Run(":8080")
 }
 
