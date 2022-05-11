@@ -7,6 +7,7 @@ import (
 	"mediaislam/handler"
 	"mediaislam/helper"
 	"mediaislam/materi"
+	"mediaislam/subscribe"
 	"mediaislam/user"
 	"mediaislam/ustadz"
 	"net/http"
@@ -28,16 +29,19 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	materiRepository := materi.NewRepository(db)
-	ustadzRepository := ustadz.NewRepository(db) 
+	ustadzRepository := ustadz.NewRepository(db)
+	subscribeRepository := subscribe.NewRepository(db)
 
 	userService := user.NewService(userRepository)
 	materiService := materi.NewService(materiRepository)
 	ustadzService := ustadz.NewService(ustadzRepository)
+	subscribeService := subscribe.NewService(subscribeRepository)
 	authService := auth.NewService()
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	materiHandler := handler.NewMateriHandler(materiService)
 	ustadzHandler := handler.NewUstadzHandler(ustadzService)
+	subscribeHandler := handler.NewSubscribeHandler(subscribeService)
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
@@ -48,8 +52,10 @@ func main() {
 
 	api.POST("/ustadz", ustadzHandler.RegisterUstadz)
 	api.GET("/ustadz", ustadzHandler.GetUstadzList)
-	api.GET("/ustadz/:id",  ustadzHandler.GetUstadz)
+	api.GET("/ustadz/:id", ustadzHandler.GetUstadz)
 
+	api.GET("/subscribe", authMiddleware(authService, userService),subscribeHandler.GetSubscribe)
+	api.POST("/subscribe", authMiddleware(authService, userService), subscribeHandler.CreateSubscribe)
 
 	api.GET("/materiall", materiHandler.GetMateriList)
 	api.GET("/materiall/:id", materiHandler.GetMateri)

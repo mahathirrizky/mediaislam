@@ -9,9 +9,6 @@ type Repository interface {
 	FindByID(ID int) (MateriTable, error)
 	FindMateriByUstadzID(ustadzID int) (MateriTable, error)
 	Update(materi MateriTable) (MateriTable, error)
-	CreateSubmateri(submateri SubmateriTable) (SubmateriTable, error)
-	FindByMateriID(materiID int) (SubmateriTable, error)
-	FindBySubmateriID(submateriID int) (VideomateriTable, error)
 }
 
 type repository struct {
@@ -72,30 +69,4 @@ func (r *repository) Update(materi MateriTable) (MateriTable, error) {
 		return materi, err
 	}
 	return materi, nil
-}
-
-func (r *repository) CreateSubmateri(submateri SubmateriTable) (SubmateriTable, error) {
-	err := r.db.Create(&submateri).Error
-	if err != nil {
-		return submateri, err
-	}
-	return submateri, nil
-}
-
-func (r *repository) FindByMateriID(materiID int) (SubmateriTable, error) {
-	var submateri SubmateriTable
-	err := r.db.Where("materi_id = ?", materiID).Find(&submateri).Error
-	if err != nil {
-		return submateri, err
-	}
-	return submateri, nil
-}
-
-func (r *repository) FindBySubmateriID(submateriID int) (VideomateriTable, error) {
-	var videomateri VideomateriTable
-	err := r.db.Where("submateri_id = ?", submateriID).Find(&videomateri).Error
-	if err != nil {
-		return videomateri, err
-	}
-	return videomateri, nil
 }
