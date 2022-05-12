@@ -14,3 +14,16 @@ func FormatCreateSubmateri(submateri SubmateriTable) CreateSubmateriFormatter {
 	}
 	return createSubmateriFormatter
 }
+
+type UpdateSubmateriFormatter struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func FormatUpdateSubmateri(submateri SubmateriTable) UpdateSubmateriFormatter {
+	updateSubmateriFormatter := UpdateSubmateriFormatter{
+		ID:   submateri.ID,
+		Name: submateri.Name,
+	}
+	return updateSubmateriFormatter
+}

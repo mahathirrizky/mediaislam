@@ -40,7 +40,7 @@ func (h *submateriHandler) CreateSubmateri(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
-func (h *submateriHandler) UpdateSubmateri(c *gin.Context){
+func (h *submateriHandler) UpdateSubmateri(c *gin.Context) {
 	var inputID submateri.GetSubmateriDetailInput
 
 	err := c.ShouldBindUri(&inputID)
@@ -67,6 +67,6 @@ func (h *submateriHandler) UpdateSubmateri(c *gin.Context){
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	response := helper.APIResponse("submateri updated", http.StatusOK, "success", submateri.FormatCreateSubmateri(updateSubmateri))
+	response := helper.APIResponse("submateri updated", http.StatusOK, "success", submateri.FormatUpdateSubmateri(updateSubmateri))
 	c.JSON(http.StatusOK, response)
 }

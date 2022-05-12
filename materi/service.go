@@ -11,10 +11,6 @@ type Service interface {
 	GetMateriByID(input GetMateriDetailInput) (MateriTable, error)
 	CreateMateri(input CreateMateriInput) (MateriTable, error)
 	UpdateMateri(input GetMateriDetailInput, inputData CreateMateriInput) (MateriTable, error)
-	// CreateSubmateri(input CreateSubmateriInput) (SubmateriTable, error)
-	// UpdateSubmateri(input GetSubmateriDetailInput, inputData CreateSubmateriInput) (SubmateriTable, error)
-	// CreateVideomateri(input CreateVideomateriInput) (VideomateriTable, error)
-	// UpdateVideomateri(input GetVideomateriDetailInput) (VideomateriTable, error)
 }
 
 type service struct {

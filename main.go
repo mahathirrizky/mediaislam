@@ -11,6 +11,7 @@ import (
 	"mediaislam/subscribe"
 	"mediaislam/user"
 	"mediaislam/ustadz"
+	"mediaislam/videomateri"
 	"net/http"
 	"strings"
 
@@ -32,12 +33,14 @@ func main() {
 	userRepository := user.NewRepository(db)
 	materiRepository := materi.NewRepository(db)
 	submateriRepository := submateri.NewRepository(db)
+	videomateriRepository := videomateri.NewRepository(db)
 	ustadzRepository := ustadz.NewRepository(db)
 	subscribeRepository := subscribe.NewRepository(db)
 
 	userService := user.NewService(userRepository)
 	materiService := materi.NewService(materiRepository)
 	submateriService := submateri.NewService(submateriRepository)
+	videomateriService := videomateri.NewService(videomateriRepository)
 	ustadzService := ustadz.NewService(ustadzRepository)
 	subscribeService := subscribe.NewService(subscribeRepository)
 	authService := auth.NewService()
@@ -45,6 +48,7 @@ func main() {
 	userHandler := handler.NewUserHandler(userService, authService)
 	materiHandler := handler.NewMateriHandler(materiService)
 	submateriHandler := handler.NewSubmateriHandler(submateriService)
+	videomateriHandler := handler.NewVideomateriHandler(videomateriService)
 	ustadzHandler := handler.NewUstadzHandler(ustadzService)
 	subscribeHandler := handler.NewSubscribeHandler(subscribeService)
 	router := gin.Default()
@@ -68,6 +72,10 @@ func main() {
 
 	api.POST("/submateri", authMiddleware(authService, userService), submateriHandler.CreateSubmateri)
 	api.PUT("/submateri/:id", authMiddleware(authService, userService), submateriHandler.UpdateSubmateri)
+
+	api.POST("/videomateri", authMiddleware(authService, userService), videomateriHandler.CreateVideomateri)
+	api.PUT("/videomateri/:id", authMiddleware(authService, userService), videomateriHandler.UpdateVideomateri)
+
 	router.Run(":8080")
 }
 
