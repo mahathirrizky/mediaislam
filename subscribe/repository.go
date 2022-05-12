@@ -7,7 +7,7 @@ type repository struct {
 }
 
 type Repository interface {
-	GetSubscribe(useriID int) ([]SubscribeTable, error)
+	GetSubscribe(userID int) ([]SubscribeTable, error)
 	Save(subscribe SubscribeTable) (SubscribeTable, error)
 }
 
@@ -15,9 +15,9 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
-func (r *repository) GetSubscribe(useriID int) ([]SubscribeTable, error) {
+func (r *repository) GetSubscribe(userID int) ([]SubscribeTable, error) {
 	var subscribes []SubscribeTable
-	err := r.db.Preload("Materi").Where("user_id = ?", useriID).Find(&subscribes).Error
+	err := r.db.Preload("Materi").Where("user_id = ?", userID).Find(&subscribes).Error
 	if err != nil {
 		return subscribes, err
 	}

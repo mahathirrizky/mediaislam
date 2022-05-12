@@ -10,10 +10,9 @@ func FormatSubscribe(subscribe SubscribeTable) SubscribeFormatter {
 	subscribeFormatter := SubscribeFormatter{
 		ID:       subscribe.ID,
 		MateriID: subscribe.MateriID,
+		NamaMateri: subscribe.Materi.Name,
 	}
-	materi := subscribe.Materi
-	subscribeFormatter.NamaMateri = materi.Name
-
+	
 	return subscribeFormatter
 }
 

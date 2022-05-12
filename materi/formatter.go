@@ -31,3 +31,8 @@ func FormatMateriList(materi []MateriTable) []MateriFormatter {
 	}
 	return materilistFormatter
 }
+
+type SubmateriFormatter struct {
+	ID          int    `json:"id"`
+	Name 	  string `json:"name"`
+}

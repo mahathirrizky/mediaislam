@@ -12,6 +12,7 @@ import (
 	"mediaislam/user"
 	"mediaislam/ustadz"
 	"mediaislam/videomateri"
+	"mediaislam/watched"
 	"net/http"
 	"strings"
 
@@ -34,6 +35,7 @@ func main() {
 	materiRepository := materi.NewRepository(db)
 	submateriRepository := submateri.NewRepository(db)
 	videomateriRepository := videomateri.NewRepository(db)
+	watchedRepository := watched.NewRepository(db)
 	ustadzRepository := ustadz.NewRepository(db)
 	subscribeRepository := subscribe.NewRepository(db)
 
@@ -41,6 +43,7 @@ func main() {
 	materiService := materi.NewService(materiRepository)
 	submateriService := submateri.NewService(submateriRepository)
 	videomateriService := videomateri.NewService(videomateriRepository)
+	watchedService := watched.NewService(watchedRepository)
 	ustadzService := ustadz.NewService(ustadzRepository)
 	subscribeService := subscribe.NewService(subscribeRepository)
 	authService := auth.NewService()
@@ -49,6 +52,7 @@ func main() {
 	materiHandler := handler.NewMateriHandler(materiService)
 	submateriHandler := handler.NewSubmateriHandler(submateriService)
 	videomateriHandler := handler.NewVideomateriHandler(videomateriService)
+	watchedHandler := handler.NewWatchedHandler(watchedService)
 	ustadzHandler := handler.NewUstadzHandler(ustadzService)
 	subscribeHandler := handler.NewSubscribeHandler(subscribeService)
 	router := gin.Default()
@@ -64,8 +68,8 @@ func main() {
 	api.GET("/ustadz", ustadzHandler.GetUstadzList)
 	api.GET("/ustadz/:id", ustadzHandler.GetUstadz)
 
-	api.GET("/subscribe", authMiddleware(authService, userService), subscribeHandler.GetSubscribe)
 	api.POST("/subscribe", authMiddleware(authService, userService), subscribeHandler.CreateSubscribe)
+	api.GET("/subscribe", authMiddleware(authService, userService), subscribeHandler.GetSubscribe)
 
 	api.GET("/materiall", materiHandler.GetMateriList)
 	api.GET("/materiall/:id", materiHandler.GetMateri)
@@ -75,6 +79,9 @@ func main() {
 
 	api.POST("/videomateri", authMiddleware(authService, userService), videomateriHandler.CreateVideomateri)
 	api.PUT("/videomateri/:id", authMiddleware(authService, userService), videomateriHandler.UpdateVideomateri)
+
+	api.POST("/watched", authMiddleware(authService, userService), watchedHandler.CreateWatched)
+	api.GET("/watched", authMiddleware(authService, userService), watchedHandler.GetWatched)
 
 	router.Run(":8080")
 }
