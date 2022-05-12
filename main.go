@@ -7,6 +7,7 @@ import (
 	"mediaislam/handler"
 	"mediaislam/helper"
 	"mediaislam/materi"
+	"mediaislam/submateri"
 	"mediaislam/subscribe"
 	"mediaislam/user"
 	"mediaislam/ustadz"
@@ -14,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -29,20 +31,24 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	materiRepository := materi.NewRepository(db)
+	submateriRepository := submateri.NewRepository(db)
 	ustadzRepository := ustadz.NewRepository(db)
 	subscribeRepository := subscribe.NewRepository(db)
 
 	userService := user.NewService(userRepository)
 	materiService := materi.NewService(materiRepository)
+	submateriService := submateri.NewService(submateriRepository)
 	ustadzService := ustadz.NewService(ustadzRepository)
 	subscribeService := subscribe.NewService(subscribeRepository)
 	authService := auth.NewService()
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	materiHandler := handler.NewMateriHandler(materiService)
+	submateriHandler := handler.NewSubmateriHandler(submateriService)
 	ustadzHandler := handler.NewUstadzHandler(ustadzService)
 	subscribeHandler := handler.NewSubscribeHandler(subscribeService)
 	router := gin.Default()
+	router.Use(cors.Default())
 	api := router.Group("/api/v1")
 
 	api.POST("/users", userHandler.RegisterUser)
@@ -54,11 +60,14 @@ func main() {
 	api.GET("/ustadz", ustadzHandler.GetUstadzList)
 	api.GET("/ustadz/:id", ustadzHandler.GetUstadz)
 
-	api.GET("/subscribe", authMiddleware(authService, userService),subscribeHandler.GetSubscribe)
+	api.GET("/subscribe", authMiddleware(authService, userService), subscribeHandler.GetSubscribe)
 	api.POST("/subscribe", authMiddleware(authService, userService), subscribeHandler.CreateSubscribe)
 
 	api.GET("/materiall", materiHandler.GetMateriList)
 	api.GET("/materiall/:id", materiHandler.GetMateri)
+
+	api.POST("/submateri", authMiddleware(authService, userService), submateriHandler.CreateSubmateri)
+	api.PUT("/submateri/:id", authMiddleware(authService, userService), submateriHandler.UpdateSubmateri)
 	router.Run(":8080")
 }
 
