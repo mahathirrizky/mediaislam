@@ -35,7 +35,7 @@ func (h *videomateriHandler) CreateVideomateri(c *gin.Context) {
 		return
 	}
 
-	response := helper.APIResponse("videomateri created", http.StatusCreated, "success", videomateri.FormatCreateVideomateri(newVideomateri))
+	response := helper.APIResponse("videomateri created", http.StatusCreated, "success", videomateri.FormatVideomateri(newVideomateri))
 	c.JSON(http.StatusCreated, response)
 }
 
@@ -66,7 +66,7 @@ func (h *videomateriHandler) UpdateVideomateri(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	response := helper.APIResponse("videomateri updated", http.StatusOK, "success", videomateri.FormatUpdateVideomateri(updateVideomateri))
+	response := helper.APIResponse("videomateri updated", http.StatusOK, "success", videomateri.FormatVideomateri(updateVideomateri))
 	c.JSON(http.StatusOK, response)
 }
 		

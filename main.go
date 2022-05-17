@@ -11,6 +11,7 @@ import (
 	"mediaislam/subscribe"
 	"mediaislam/user"
 	"mediaislam/ustadz"
+	"mediaislam/video"
 	"mediaislam/videomateri"
 	"mediaislam/watched"
 	"net/http"
@@ -35,6 +36,7 @@ func main() {
 	materiRepository := materi.NewRepository(db)
 	submateriRepository := submateri.NewRepository(db)
 	videomateriRepository := videomateri.NewRepository(db)
+	videoRepository := video.NewRepository(db)
 	watchedRepository := watched.NewRepository(db)
 	ustadzRepository := ustadz.NewRepository(db)
 	subscribeRepository := subscribe.NewRepository(db)
@@ -43,6 +45,7 @@ func main() {
 	materiService := materi.NewService(materiRepository)
 	submateriService := submateri.NewService(submateriRepository)
 	videomateriService := videomateri.NewService(videomateriRepository)
+	videoService := video.NewService(videoRepository)
 	watchedService := watched.NewService(watchedRepository)
 	ustadzService := ustadz.NewService(ustadzRepository)
 	subscribeService := subscribe.NewService(subscribeRepository)
@@ -52,6 +55,7 @@ func main() {
 	materiHandler := handler.NewMateriHandler(materiService)
 	submateriHandler := handler.NewSubmateriHandler(submateriService)
 	videomateriHandler := handler.NewVideomateriHandler(videomateriService)
+	videoHandler := handler.NewVideoHandler(videoService)
 	watchedHandler := handler.NewWatchedHandler(watchedService)
 	ustadzHandler := handler.NewUstadzHandler(ustadzService)
 	subscribeHandler := handler.NewSubscribeHandler(subscribeService)
@@ -63,14 +67,17 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+	api.GET("users/fetch", authMiddleware(authService, userService), userHandler.FetchUser)
 
-	api.POST("/ustadz", ustadzHandler.RegisterUstadz)
-	api.GET("/ustadz", ustadzHandler.GetUstadzList)
-	api.GET("/ustadz/:id", ustadzHandler.GetUstadz)
+	api.POST("/ustadz", authMiddleware(authService, userService), ustadzHandler.RegisterUstadz)
+	api.GET("/ustadz", authMiddleware(authService, userService), ustadzHandler.GetUstadzList)
+	api.GET("/ustadz/:id", authMiddleware(authService, userService), ustadzHandler.GetUstadz)
 
 	api.POST("/subscribe", authMiddleware(authService, userService), subscribeHandler.CreateSubscribe)
 	api.GET("/subscribe", authMiddleware(authService, userService), subscribeHandler.GetSubscribe)
 
+	api.POST("/materi", authMiddleware(authService, userService), materiHandler.CreateMateri)
+	api.PUT("/materi/:id", authMiddleware(authService, userService), materiHandler.UpdateMateri)
 	api.GET("/materiall", materiHandler.GetMateriList)
 	api.GET("/materiall/:id", materiHandler.GetMateri)
 
@@ -79,6 +86,16 @@ func main() {
 
 	api.POST("/videomateri", authMiddleware(authService, userService), videomateriHandler.CreateVideomateri)
 	api.PUT("/videomateri/:id", authMiddleware(authService, userService), videomateriHandler.UpdateVideomateri)
+
+	api.POST("/videotematik", authMiddleware(authService, userService), videoHandler.CreateVideo)
+	api.POST("/videotematikimage", authMiddleware(authService, userService), videoHandler.UploadImage)
+	api.PUT("/videotematik/:id", authMiddleware(authService, userService), videoHandler.GetVideo)
+	api.GET("/videotematik", videoHandler.GetTematikList)
+
+	api.POST("/videoshort", authMiddleware(authService, userService), videoHandler.CreateVideo)
+	api.POST("/videoshortimage", authMiddleware(authService, userService), videoHandler.UploadImage)
+	api.PUT("/videoshort/:id", authMiddleware(authService, userService), videoHandler.GetVideo)
+	api.GET("/videoshort", videoHandler.GetShortList)
 
 	api.POST("/watched", authMiddleware(authService, userService), watchedHandler.CreateWatched)
 	api.GET("/watched", authMiddleware(authService, userService), watchedHandler.GetWatched)

@@ -1,19 +1,19 @@
-package materi
+package video
 
 import (
-	"mediaislam/ustadz"
+	"mediaislam/user"
 	"time"
 )
 
-type MateriTable struct {
+type VideoTable struct {
 	ID            int
-	UstadzID      int
+	UserID        int
 	Name          string
 	Description   string
-	Slug          string
+	Link          string
 	ImageFileName string
+	Type          string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	UserID        int
-	Ustadz        ustadz.UstadzTable
+	User          user.UserTable
 }

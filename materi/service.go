@@ -11,6 +11,7 @@ type Service interface {
 	GetMateriByID(input GetMateriDetailInput) (MateriTable, error)
 	CreateMateri(input CreateMateriInput) (MateriTable, error)
 	UpdateMateri(input GetMateriDetailInput, inputData CreateMateriInput) (MateriTable, error)
+	SaveImage(ID int, fileLocation string) (MateriTable, error)
 }
 
 type service struct {
@@ -73,11 +74,25 @@ func (s *service) UpdateMateri(input GetMateriDetailInput, inputData CreateMater
 	if materi.UserID != inputData.User.ID {
 		return materi, fmt.Errorf("user tidak bisa mengubah materi yang bukan miliknya")
 	}
-
+	
 	materi.UstadzID = inputData.UstadzID
 	materi.Name = inputData.Name
 	materi.Description = inputData.Description
 
+	updatedMateri, err := s.repository.Update(materi)
+	if err != nil {
+		return updatedMateri, err
+	}
+	return updatedMateri, nil
+}
+
+func (s *service) SaveImage(ID int, fileLocation string) (MateriTable, error) {
+	materi, err := s.repository.FindByID(ID)
+	if err != nil {
+		return materi, err
+	}
+
+	materi.ImageFileName = fileLocation
 	updatedMateri, err := s.repository.Update(materi)
 	if err != nil {
 		return updatedMateri, err

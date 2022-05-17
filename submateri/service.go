@@ -4,7 +4,7 @@ type service struct {
 	repository Repository
 }
 
-type Service interface{
+type Service interface {
 	CreateSubmateri(input CreateSubmateriInput) (SubmateriTable, error)
 	UpdateSubmateri(inputID GetSubmateriDetailInput, inputData CreateSubmateriInput) (SubmateriTable, error)
 }
@@ -16,7 +16,7 @@ func NewService(repository Repository) *service {
 func (s *service) CreateSubmateri(input CreateSubmateriInput) (SubmateriTable, error) {
 	submateri := SubmateriTable{
 		MateriID: input.MateriID,
-		Name: input.Name,
+		Name:     input.Name,
 	}
 
 	newSubmateri, err := s.repository.Save(submateri)

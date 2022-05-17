@@ -144,8 +144,6 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	
-
 	_, err = h.userService.SaveAvatar(userID, path)
 	if err != nil {
 		data := gin.H{"is_uploaded": false}
@@ -156,5 +154,15 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 
 	data := gin.H{"is_uploaded": true}
 	response := helper.APIResponse("Upload avatar success", http.StatusOK, "success", data)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *userHandler) FetchUser(c *gin.Context){
+	currentUser:= c.MustGet("currentUser").(user.UserTable)
+
+	formatter := user.FormatUser(currentUser, "")
+
+	response := helper.APIResponse("Fetch user success", http.StatusOK, "success", formatter)
+
 	c.JSON(http.StatusOK, response)
 }

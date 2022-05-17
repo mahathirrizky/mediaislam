@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"mediaislam/helper"
 	"mediaislam/materi"
 	"mediaislam/user"
@@ -109,5 +110,44 @@ func (h *materiHandler) UpdateMateri(c *gin.Context) {
 		return
 	}
 	response := helper.APIResponse("Success to update materi", http.StatusOK, "success", materi.FormatMateri(updatedMateri))
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *materiHandler) UploadImage(c *gin.Context) {
+	file, err := c.FormFile("image")
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.APIResponse("Failed to upload image", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.UserTable)
+	userID := currentUser.ID
+
+	path := fmt.Sprintf("images/%d-%s", userID, file.Filename)
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.APIResponse("Failed to upload image", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	_, err = h.service.SaveImage(userID, file.Filename)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.APIResponse("Failed to upload image", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	data := gin.H{"is_uploaded": true}
+	response := helper.APIResponse("Image uploaded", http.StatusOK, "success", data)
+
 	c.JSON(http.StatusOK, response)
 }

@@ -7,9 +7,10 @@ import (
 )
 
 type SubscribeTable struct {
-	ID        int  `json:"id"`
-	UserID    int  `json:"user_id"`
-	MateriID  int  `json:"materi_id"`
+	ID        int  
+	UserID    int  
+	MateriID  int  
+	AvatarFileName string 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	User      user.UserTable

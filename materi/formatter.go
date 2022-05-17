@@ -11,14 +11,13 @@ type MateriFormatter struct {
 
 func FormatMateri(materi MateriTable) MateriFormatter {
 	materiFormatter := MateriFormatter{
-		ID:     materi.ID,
-		UserID: materi.UserID,
+		ID:          materi.ID,
+		UserID:      materi.UserID,
 		Name:        materi.Name,
 		Description: materi.Description,
 		Slug:        materi.Slug,
+		NamaUstadz:  materi.Ustadz.Name,
 	}
-	ustadz := materi.Ustadz
-	materiFormatter.NamaUstadz = ustadz.Name
 
 	return materiFormatter
 }
@@ -33,6 +32,6 @@ func FormatMateriList(materi []MateriTable) []MateriFormatter {
 }
 
 type SubmateriFormatter struct {
-	ID          int    `json:"id"`
-	Name 	  string `json:"name"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
