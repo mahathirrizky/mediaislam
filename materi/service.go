@@ -7,8 +7,9 @@ import (
 )
 
 type Service interface {
-	GetMateri(userID int) ([]MateriTable, error)
+	GetMateriList(userID int) ([]MateriTable, error)
 	GetMateriByID(input GetMateriDetailInput) (MateriTable, error)
+	GetSubandVideo(input GetMateriDetailInput) (MateriTable, error)
 	CreateMateri(input CreateMateriInput) (MateriTable, error)
 	UpdateMateri(input GetMateriDetailInput, inputData CreateMateriInput) (MateriTable, error)
 	SaveImage(ID int, fileLocation string) (MateriTable, error)
@@ -22,7 +23,7 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) GetMateri(userID int) ([]MateriTable, error) {
+func (s *service) GetMateriList(userID int) ([]MateriTable, error) {
 	if userID != 0 {
 		materi, err := s.repository.FindByUserID(userID)
 		if err != nil {
@@ -47,6 +48,14 @@ func (s *service) GetMateriByID(input GetMateriDetailInput) (MateriTable, error)
 	return materi, nil
 }
 
+func (s *service) GetSubandVideo(input GetMateriDetailInput) (MateriTable, error) {
+	materi, err := s.repository.FindSubmateriVideomateriByID(input.ID)
+	if err != nil {
+		return materi, err
+	}
+	return materi, nil
+}
+
 func (s *service) CreateMateri(input CreateMateriInput) (MateriTable, error) {
 	materi := MateriTable{
 		UstadzID:    input.UstadzID,
@@ -56,7 +65,6 @@ func (s *service) CreateMateri(input CreateMateriInput) (MateriTable, error) {
 	}
 	slugCandidate := fmt.Sprint("%s %d", input.Name, input.User.ID)
 	materi.Slug = slug.Make(slugCandidate)
-
 	newMateri, err := s.repository.Save(materi)
 	if err != nil {
 		return newMateri, err
@@ -74,7 +82,7 @@ func (s *service) UpdateMateri(input GetMateriDetailInput, inputData CreateMater
 	if materi.UserID != inputData.User.ID {
 		return materi, fmt.Errorf("user tidak bisa mengubah materi yang bukan miliknya")
 	}
-	
+
 	materi.UstadzID = inputData.UstadzID
 	materi.Name = inputData.Name
 	materi.Description = inputData.Description

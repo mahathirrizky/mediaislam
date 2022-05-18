@@ -67,20 +67,23 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
-	api.GET("users/fetch", authMiddleware(authService, userService), userHandler.FetchUser)
+	api.GET("/users/fetch", authMiddleware(authService, userService), userHandler.FetchUser)
 
 	api.POST("/ustadz", authMiddleware(authService, userService), ustadzHandler.RegisterUstadz)
-	api.GET("/ustadz", authMiddleware(authService, userService), ustadzHandler.GetUstadzList)
+	api.PUT("/ustadz/:id", authMiddleware(authService, userService), ustadzHandler.UpdateUstadz)
+	api.GET("/ustadz", ustadzHandler.GetUstadzList)
 	api.GET("/ustadz/:id", authMiddleware(authService, userService), ustadzHandler.GetUstadz)
 
 	api.POST("/subscribe", authMiddleware(authService, userService), subscribeHandler.CreateSubscribe)
 	api.GET("/subscribe", authMiddleware(authService, userService), subscribeHandler.GetSubscribe)
 
 	api.POST("/materi", authMiddleware(authService, userService), materiHandler.CreateMateri)
+	api.POST("/materiimage", authMiddleware(authService, userService), materiHandler.UploadImage)
 	api.PUT("/materi/:id", authMiddleware(authService, userService), materiHandler.UpdateMateri)
-	api.GET("/materiall", materiHandler.GetMateriList)
-	api.GET("/materiall/:id", materiHandler.GetMateri)
-
+	api.GET("/materi", materiHandler.GetMateriList)
+	api.GET("/materi/:id", materiHandler.GetMateri)
+	api.GET("/materiall/:id", materiHandler.GetMateriSubandVideo)
+	
 	api.POST("/submateri", authMiddleware(authService, userService), submateriHandler.CreateSubmateri)
 	api.PUT("/submateri/:id", authMiddleware(authService, userService), submateriHandler.UpdateSubmateri)
 

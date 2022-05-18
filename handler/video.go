@@ -31,6 +31,13 @@ func (h *VideoHandler) CreateVideo(c *gin.Context) {
 		return
 	}
 
+	currentUser := c.MustGet("currentUser").(user.UserTable)
+	if currentUser.Role == "user" {
+		response := helper.APIResponse("Failed to create video, user cant create video", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
 	newVideo, err := h.service.CreateVideo(input)
 	if err != nil {
 		response := helper.APIResponse("Failed to create video", http.StatusBadRequest, "error", nil)

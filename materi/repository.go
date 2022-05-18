@@ -7,6 +7,7 @@ type Repository interface {
 	FindByUserID(userID int) ([]MateriTable, error)
 	Save(materi MateriTable) (MateriTable, error)
 	FindByID(ID int) (MateriTable, error)
+	FindSubmateriVideomateriByID(ID int) (MateriTable, error)
 	FindMateriByUstadzID(ustadzID int) (MateriTable, error)
 	Update(materi MateriTable) (MateriTable, error)
 }
@@ -30,7 +31,7 @@ func (r *repository) FindAll() ([]MateriTable, error) {
 
 func (r *repository) FindByUserID(userID int) ([]MateriTable, error) {
 	var materi []MateriTable
-	err := r.db.Where("user_id = ?", userID).Find(&materi).Error
+	err := r.db.Preload("User").Where("user_id = ?", userID).Find(&materi).Error
 	if err != nil {
 		return materi, err
 	}
@@ -39,7 +40,7 @@ func (r *repository) FindByUserID(userID int) ([]MateriTable, error) {
 
 func (r *repository) FindByID(ID int) (MateriTable, error) {
 	var materi MateriTable
-	err := r.db.Where("ID = ?", ID).Find(&materi).Error
+	err := r.db.Preload("Ustadz").Where("ID = ?", ID).Find(&materi).Error
 	if err != nil {
 		return materi, err
 	}
@@ -65,6 +66,15 @@ func (r *repository) FindMateriByUstadzID(ustadzID int) (MateriTable, error) {
 
 func (r *repository) Update(materi MateriTable) (MateriTable, error) {
 	err := r.db.Save(&materi).Error
+	if err != nil {
+		return materi, err
+	}
+	return materi, nil
+}
+
+func (r *repository) FindSubmateriVideomateriByID(ID int) (MateriTable, error) {
+	var materi MateriTable
+	err := r.db.Where("id = ?", ID).Preload("Submateri.Videomateri").Find(&materi).Error
 	if err != nil {
 		return materi, err
 	}

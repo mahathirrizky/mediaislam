@@ -1,11 +1,13 @@
 package ustadz
 
 type ustadzFormatter struct {
+	ID	int    `json:"id"`
 	Name string `json:"name"`
 }
 
 func FormatUstadz(ustadz UstadzTable) ustadzFormatter {
 	return ustadzFormatter{
+		ID: ustadz.ID,
 		Name: ustadz.Name,
 	}
 }

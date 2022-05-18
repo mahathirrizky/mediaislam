@@ -2,6 +2,7 @@ package handler
 
 import (
 	"mediaislam/helper"
+	"mediaislam/user"
 	"mediaislam/ustadz"
 	"net/http"
 	"strconv"
@@ -60,6 +61,13 @@ func (h *ustadzHandler) RegisterUstadz(c *gin.Context) {
 
 		response := helper.APIResponse("Failed to create ustadz", http.StatusUnprocessableEntity, "error", errorMessage)
 		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.UserTable)
+	if currentUser.Role == "user" {
+		response := helper.APIResponse("Failed to create ustadz, must contributor who can register ustadz", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 

@@ -22,13 +22,33 @@ func NewMateriHandler(service materi.Service) *materiHandler {
 func (h *materiHandler) GetMateriList(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Query("user_id"))
 
-	datamateri, err := h.service.GetMateri(userID)
+	datamateri, err := h.service.GetMateriList(userID)
 	if err != nil {
 		response := helper.APIResponse("error to get materi", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 	response := helper.APIResponse("list of materi", http.StatusOK, "success", materi.FormatMateriList(datamateri))
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *materiHandler) GetMateriSubandVideo(c *gin.Context) {
+	var input materi.GetMateriDetailInput
+
+	err := c.ShouldBindUri(&input)
+	if err != nil {
+		response := helper.APIResponse("error to get materi", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	datamateri, err := h.service.GetSubandVideo(input)
+	if err != nil {
+		response := helper.APIResponse("error to get materi1", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	response := helper.APIResponse("list of materi", http.StatusOK, "success", materi.FormatMateriAll(datamateri))
 	c.JSON(http.StatusOK, response)
 }
 
@@ -66,6 +86,12 @@ func (h *materiHandler) CreateMateri(c *gin.Context) {
 	}
 
 	currentUser := c.MustGet("currentUser").(user.UserTable)
+	if currentUser.Role == "user" {
+		response := helper.APIResponse("Failed to create materi, user cant create materi", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
 	input.User = currentUser
 
 	newMateri, err := h.service.CreateMateri(input)
