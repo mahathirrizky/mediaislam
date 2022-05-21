@@ -71,11 +71,3 @@ func FormatMateriAll(materi MateriTable) MateriAllFormatter {
 	}
 	return materiAllFormatter
 }
-
-// func FormatMateriAlls(materi []MateriTable) []MateriAllFormatter {
-// 	materiAllFormatter := []MateriAllFormatter{}
-// 	for _, materiall := range materi {
-// 		materiAllFormatter = append(materiAllFormatter, FormatMateriAll(materiall))
-// 	}
-// 	return materiAllFormatter
-// }

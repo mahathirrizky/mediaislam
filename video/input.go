@@ -11,7 +11,7 @@ type CreateVideoInput struct {
 }
 
 type GetVideoDetailInput struct {
-	ID int `json:"id" binding:"required"`
+	ID int `uri:"id" binding:"required"`
 }
 
 type GetVideoTematikInput struct {

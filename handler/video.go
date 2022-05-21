@@ -19,7 +19,7 @@ func NewVideoHandler(service video.Service) *VideoHandler {
 	return &VideoHandler{service}
 }
 
-func (h *VideoHandler) CreateVideo(c *gin.Context) {
+func (h *VideoHandler) CreateVideoTematik(c *gin.Context) {
 	var input video.CreateVideoInput
 	err := c.ShouldBindJSON(&input)
 	if err != nil {
@@ -38,7 +38,41 @@ func (h *VideoHandler) CreateVideo(c *gin.Context) {
 		return
 	}
 
-	newVideo, err := h.service.CreateVideo(input)
+	input.User = currentUser
+
+	newVideo, err := h.service.CreateVideoTematik(input)
+	if err != nil {
+		response := helper.APIResponse("Failed to create video tematik", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("video created", http.StatusCreated, "success", video.FormatVideo(newVideo))
+	c.JSON(http.StatusCreated, response)
+}
+
+func (h *VideoHandler) CreateVideoShort(c *gin.Context) {
+	var input video.CreateVideoInput
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": errors}
+
+		response := helper.APIResponse("Failed to create video short", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.UserTable)
+	if currentUser.Role == "user" {
+		response := helper.APIResponse("Failed to create video, user cant create video", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	input.User = currentUser
+
+	newVideo, err := h.service.CreateVideoShort(input)
 	if err != nil {
 		response := helper.APIResponse("Failed to create video", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
@@ -86,14 +120,14 @@ func (h *VideoHandler) GetVideo(c *gin.Context) {
 
 	err := c.ShouldBindUri(&input)
 	if err != nil {
-		response := helper.APIResponse("error to get video", http.StatusBadRequest, "error", nil)
+		response := helper.APIResponse("error to get video 1", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	getVideo, err := h.service.GetVideo(input)
 	if err != nil {
-		response := helper.APIResponse("Failed to get video", http.StatusBadRequest, "error", nil)
+		response := helper.APIResponse("Failed to get video 2", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}

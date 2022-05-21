@@ -1,9 +1,10 @@
 package watched
 
 type WatchedFormatter struct {
-	ID            int `json:"id"`
-	UserID        int `json:"user_id"`
-	VideomateriID int `json:"videomateri_id"`
+	ID              int    `json:"id"`
+	UserID          int    `json:"user_id"`
+	VideomateriID   int    `json:"videomateri_id"`
+	VideomateriName string `json:"videomateri_name"`
 }
 
 func FormatWatched(watched WatchedTable) WatchedFormatter {
@@ -11,6 +12,7 @@ func FormatWatched(watched WatchedTable) WatchedFormatter {
 		ID:            watched.ID,
 		UserID:        watched.UserID,
 		VideomateriID: watched.VideomateriID,
+		VideomateriName: watched.Videomateri.Name,
 	}
 
 	return watchedFormatter
@@ -26,15 +28,15 @@ func FormatWatchedList(watched []WatchedTable) []WatchedFormatter {
 }
 
 type CreateWatchedFormatter struct {
-	ID       int `json:"id"`
-	UserID   int `json:"user_id"`
+	ID            int `json:"id"`
+	UserID        int `json:"user_id"`
 	VideomateriID int `json:"videomateri_id"`
 }
 
 func FormatCreateWatched(watched WatchedTable) CreateWatchedFormatter {
 	createWatchedFormatter := CreateWatchedFormatter{
-		ID:       watched.ID,
-		UserID:   watched.UserID,
+		ID:            watched.ID,
+		UserID:        watched.UserID,
 		VideomateriID: watched.VideomateriID,
 	}
 	return createWatchedFormatter

@@ -47,7 +47,7 @@ func (r *repository) FindByID(ID int) (VideoTable, error) {
 
 func (r *repository) FindTematik() ([]VideoTable, error) {
 	var videos []VideoTable
-	err := r.db.Where("type = tematik").Find(&videos).Error
+	err := r.db.Where("type = ?", "tematik").Find(&videos).Error
 	if err != nil {
 		return videos, err
 	}
@@ -56,7 +56,7 @@ func (r *repository) FindTematik() ([]VideoTable, error) {
 
 func (r *repository) FindTematikByUserID(userID int) ([]VideoTable, error) {
 	var video []VideoTable
-	err := r.db.Where("user_id = ? AND type = tematik", userID).Find(&video).Error
+	err := r.db.Where("user_id = ? AND type = ?", userID, "tematik").Find(&video).Error
 	if err != nil {
 		return video, err
 	}
@@ -65,7 +65,7 @@ func (r *repository) FindTematikByUserID(userID int) ([]VideoTable, error) {
 
 func (r *repository) FindShort() ([]VideoTable, error) {
 	var videos []VideoTable
-	err := r.db.Where("type = short").Find(&videos).Error
+	err := r.db.Where("type = ?", "short").Find(&videos).Error
 	if err != nil {
 		return videos, err
 	}
@@ -74,7 +74,7 @@ func (r *repository) FindShort() ([]VideoTable, error) {
 
 func (r *repository) FindShortByUserID(userID int) ([]VideoTable, error) {
 	var video []VideoTable
-	err := r.db.Where("user_id = ? AND type = short", userID).Find(&video).Error
+	err := r.db.Where("user_id = ? AND type = ?", userID, "short").Find(&video).Error
 	if err != nil {
 		return video, err
 	}

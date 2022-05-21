@@ -82,7 +82,7 @@ func main() {
 	api.PUT("/materi/:id", authMiddleware(authService, userService), materiHandler.UpdateMateri)
 	api.GET("/materi", materiHandler.GetMateriList)
 	api.GET("/materi/:id", materiHandler.GetMateri)
-	api.GET("/materiall/:id", materiHandler.GetMateriSubandVideo)
+	api.GET("/materiall/:id", authMiddleware(authService, userService), materiHandler.GetMateriSubandVideo)
 	
 	api.POST("/submateri", authMiddleware(authService, userService), submateriHandler.CreateSubmateri)
 	api.PUT("/submateri/:id", authMiddleware(authService, userService), submateriHandler.UpdateSubmateri)
@@ -90,15 +90,17 @@ func main() {
 	api.POST("/videomateri", authMiddleware(authService, userService), videomateriHandler.CreateVideomateri)
 	api.PUT("/videomateri/:id", authMiddleware(authService, userService), videomateriHandler.UpdateVideomateri)
 
-	api.POST("/videotematik", authMiddleware(authService, userService), videoHandler.CreateVideo)
+	api.POST("/videotematik", authMiddleware(authService, userService), videoHandler.CreateVideoTematik)
 	api.POST("/videotematikimage", authMiddleware(authService, userService), videoHandler.UploadImage)
 	api.PUT("/videotematik/:id", authMiddleware(authService, userService), videoHandler.GetVideo)
 	api.GET("/videotematik", videoHandler.GetTematikList)
+	api.GET("/videotematik/:id", videoHandler.GetVideo)
 
-	api.POST("/videoshort", authMiddleware(authService, userService), videoHandler.CreateVideo)
+	api.POST("/videoshort", authMiddleware(authService, userService), videoHandler.CreateVideoShort)
 	api.POST("/videoshortimage", authMiddleware(authService, userService), videoHandler.UploadImage)
 	api.PUT("/videoshort/:id", authMiddleware(authService, userService), videoHandler.GetVideo)
 	api.GET("/videoshort", videoHandler.GetShortList)
+	api.GET("/videoshort/:id", videoHandler.GetVideo)
 
 	api.POST("/watched", authMiddleware(authService, userService), watchedHandler.CreateWatched)
 	api.GET("/watched", authMiddleware(authService, userService), watchedHandler.GetWatched)

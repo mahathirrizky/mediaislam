@@ -7,7 +7,8 @@ type service struct {
 }
 
 type Service interface {
-	CreateVideo(input CreateVideoInput) (VideoTable, error)
+	CreateVideoTematik(input CreateVideoInput) (VideoTable, error)
+	CreateVideoShort(input CreateVideoInput) (VideoTable, error)
 	UpdateVideo(inputID GetVideoDetailInput, inputData CreateVideoInput) (VideoTable, error)
 	GetVideo(inputID GetVideoDetailInput) (VideoTable, error)
 	SaveImage(ID int, fileLocation string) (VideoTable, error)
@@ -19,12 +20,33 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) CreateVideo(input CreateVideoInput) (VideoTable, error) {
+func (s *service) CreateVideoTematik(input CreateVideoInput) (VideoTable, error) {
 	video := VideoTable{
 		Name:        input.Name,
 		Description: input.Description,
 		Link:        input.Link,
 		UserID:      input.User.ID,
+		Type:		"tematik",
+	}
+
+	if input.User.Role != "contributor" {
+		return video, fmt.Errorf("hanya contributor yang dapat membuat video")
+	}
+
+	newVideo, err := s.repository.Save(video)
+	if err != nil {
+		return newVideo, err
+	}
+	return newVideo, nil
+}
+
+func (s *service) CreateVideoShort(input CreateVideoInput) (VideoTable, error) {
+	video := VideoTable{
+		Name:        input.Name,
+		Description: input.Description,
+		Link:        input.Link,
+		UserID:      input.User.ID,
+		Type:		"short",
 	}
 
 	if input.User.Role != "contributor" {
