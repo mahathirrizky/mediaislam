@@ -7,7 +7,7 @@ import (
 )
 
 type Service interface {
-	GenerateToken(userID int, role string) (string, error)
+	GenerateToken(userID int) (string, error)
 	ValidateToken(encodedToken string) (*jwt.Token, error)
 }
 
@@ -20,12 +20,11 @@ func NewService() *jwtService {
 	return &jwtService{}
 }
 
-func (s *jwtService) GenerateToken(userID int, role string) (string, error) {
+func (s *jwtService) GenerateToken(userID int) (string, error) {
 
 	claim := jwt.MapClaims{}
 	claim["user_id"] = userID
-	claim["role"] = role
-
+	
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 
 	signedToken, err := token.SignedString(SECRET_KEY)

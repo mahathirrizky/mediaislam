@@ -32,37 +32,39 @@ func FormatMateriList(materi []MateriTable) []MateriFormatter {
 }
 
 type MateriAllFormatter struct {
-	ID        int `json:"id"`
-	Name	  string `json:"name"`
+	ID        int                  `json:"id"`
+	Name      string               `json:"name"`
 	Submateri []SubmateriFormatter `json:"submateri"`
 }
 
 type SubmateriFormatter struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	VideoMateri []VideoMateriFormatter
+	ID          int                    `json:"id"`
+	Name        string                 `json:"name"`
+	VideoMateri []VideoMateriFormatter `json:"videomateri"`
 }
 
 type VideoMateriFormatter struct {
 	ID          int    `json:"id"`
 	Link        string `json:"link"`
+	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
 func FormatMateriAll(materi MateriTable) MateriAllFormatter {
 	materiAllFormatter := MateriAllFormatter{
-		ID: materi.ID,
+		ID:   materi.ID,
 		Name: materi.Name,
 	}
 	for _, submateri := range materi.Submateri {
 		submateriFormatter := SubmateriFormatter{
-			ID: submateri.ID,
+			ID:   submateri.ID,
 			Name: submateri.Name,
 		}
 		for _, videomateri := range submateri.Videomateri {
 			videoMateriFormatter := VideoMateriFormatter{
 				ID:          videomateri.ID,
 				Link:        videomateri.Link,
+				Name:        videomateri.Name,
 				Description: videomateri.Description,
 			}
 			submateriFormatter.VideoMateri = append(submateriFormatter.VideoMateri, videoMateriFormatter)

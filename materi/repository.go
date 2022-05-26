@@ -22,7 +22,7 @@ func NewRepository(db *gorm.DB) *repository {
 
 func (r *repository) FindAll() ([]MateriTable, error) {
 	var materi []MateriTable
-	err := r.db.Preload("Ustadz").Find(&materi).Error
+	err := r.db.Preload("Ustadz").Order("id desc").Find(&materi).Error
 	if err != nil {
 		return materi, err
 	}

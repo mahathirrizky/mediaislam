@@ -39,7 +39,7 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 	
-	token, err := h.authService.GenerateToken(newUser.ID, newUser.Role)
+	token, err := h.authService.GenerateToken(newUser.ID)
 	if err != nil {
 		response := helper.APIResponse("Register account failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
@@ -75,7 +75,7 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.authService.GenerateToken(loggedinUser.ID, loggedinUser.Role)
+	token, err := h.authService.GenerateToken(loggedinUser.ID)
 	if err != nil {
 		response := helper.APIResponse("Login failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
